@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Autocorrect & Contextual Spell Checker</title>
+    <!-- Google Fonts: Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS stylesheet link -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="glass-bg-container">
+        <!-- Floating Ambient Blur Elements -->
+        <div class="blob blob-purple"></div>
+        <div class="blob blob-cyan"></div>
+
+        <header class="app-header">
+            <div class="logo">
+                <i class="fa-solid fa-wand-magic-sparkles magic-icon"></i>
+                <h1>AutoCorrect <span>AI</span></h1>
+            </div>
+            <p class="subtitle">Advanced context-aware grammar & spelling corrector powered by NLP and BERT</p>
+        </header>
+
+        <main class="main-content">
+            <!-- Left Panel: Input & Settings -->
+            <section class="control-panel glass-card">
+                <div class="card-header">
+                    <h2><i class="fa-solid fa-pen-to-square"></i> Input Text</h2>
+                    <div class="sample-selector">
+                        <label for="sample-select">Load Test Case:</label>
+                        <select id="sample-select">
+                            <option value="">-- Choose an incorrect sentence --</option>
+                            <option value="I went to the shore to buy some close for the winter.">Homophone: "...buy some close..."</option>
+                            <option value="They are going to there school now.">Homophone: "...to there school..."</option>
+                            <option value="The principal of the school is a man of high principles.">Context: "principal" vs "principle"</option>
+                            <option value="I think this is a verry bad spellling error.">Spelling: "...verry bad spellling..."</option>
+                            <option value="We accept your invitation except for the last day.">Confused: "accept" vs "except"</option>
+                            <option value="The medicine did not have a strong affect on my cold.">Confused: "affect" vs "effect"</option>
+                            <option value="It is easy to lose your keys if they are loose in your pocket.">Homophone: "lose" vs "loose"</option>
+                            <option value="The dog wagged its tail because it's happy.">Punctuation Context: "its" vs "it's"</option>
+                            <option value="She walk to the store yesterday to buyed some fresh apples.">Grammar: "walk" and "buyed" past-tense</option>
+                            <option value="This NLP proproject is simpley outtstanding.">Multiple Typos: "proproject", "simpley", "outtstanding"</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-container">
+                    <textarea id="text-input" placeholder="Type or paste your text here (e.g., 'I went to the store to buy some close...')" maxlength="1000"></textarea>
+                    <div class="char-counter"><span id="current-char-count">0</span> / 1000</div>
+                </div>
+
+                <div class="button-group">
+                    <button id="clear-btn" class="btn btn-secondary">
+                        <i class="fa-solid fa-trash-can"></i> Clear
+                    </button>
+                    <button id="correct-btn" class="btn btn-primary">
+                        <span>Run AI Autocorrect</span>
+                        <i class="fa-solid fa-bolt"></i>
+                    </button>
+                </div>
+
+                <div class="nlp-details">
+                    <h3><i class="fa-solid fa-gears"></i> Engine Details</h3>
+                    <div class="engine-info">
+                        <div class="engine-badge textblob-badge">
+                            <span class="dot green-dot"></span>
+                            TextBlob Spellcheck: ACTIVE
+                        </div>
+                        <div class="engine-badge bert-badge">
+                            <span class="dot violet-dot" id="bert-status-dot"></span>
+                            BERT Transformer: <span id="bert-status-text">LOADING...</span>
+                        </div>
+                    </div>
+                    <p class="engine-description">
+                        The tool performs standard edit-distance vocabulary checks via TextBlob, applies tokenization via NLTK, and evaluates semantic plausibility using DistilBERT fill-mask contextual probability.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Right Panel: Results & Analytics -->
+            <section class="results-panel">
+                <!-- Loading Overlay -->
+                <div id="loader" class="loader-overlay hidden">
+                    <div class="spinner"></div>
+                    <p id="loader-message">Processing input text...</p>
+                </div>
+
+                <!-- Welcome Placeholder (visible initially) -->
+                <div id="welcome-placeholder" class="glass-card welcome-card">
+                    <div class="welcome-icon-container">
+                        <i class="fa-solid fa-brain-circuit brain-icon"></i>
+                    </div>
+                    <h3>Analyze Your Text</h3>
+                    <p>Enter a sentence with spelling or context mistakes on the left and click "Run AI Autocorrect" to inspect real-time comparison analytics between traditional models and neural networks.</p>
+                </div>
+
+                <!-- Results Content (hidden initially) -->
+                <div id="results-content" class="hidden">
+                    <!-- Metrics Cards Grid -->
+                    <div class="metrics-grid">
+                        <div class="metric-card glass-card">
+                            <span class="metric-icon"><i class="fa-solid fa-clock"></i></span>
+                            <div class="metric-value" id="metric-time">0.00s</div>
+                            <div class="metric-label">Processing Speed</div>
+                        </div>
+                        <div class="metric-card glass-card">
+                            <span class="metric-icon"><i class="fa-solid fa-check-double"></i></span>
+                            <div class="metric-value" id="metric-corrections">0</div>
+                            <div class="metric-label">BERT Corrections</div>
+                        </div>
+                        <div class="metric-card glass-card">
+                            <span class="metric-icon"><i class="fa-solid fa-star-half-stroke"></i></span>
+                            <div class="metric-value" id="metric-accuracy">100%</div>
+                            <div class="metric-label">Input Spelling Quality</div>
+                        </div>
+                    </div>
+
+                    <!-- Comparison Section -->
+                    <div class="comparison-container glass-card">
+                        <h3><i class="fa-solid fa-square-poll-horizontal"></i> Spell Correction Comparisons</h3>
+                        
+                        <div class="comparison-card original-block">
+                            <div class="block-header">
+                                <span class="badge badge-original">Original Text</span>
+                            </div>
+                            <div class="block-text" id="original-output"></div>
+                        </div>
+
+                        <div class="comparison-card textblob-block">
+                            <div class="block-header">
+                                <span class="badge badge-textblob">TextBlob Correction</span>
+                                <span class="card-caption">Heuristic-based, word-level</span>
+                            </div>
+                            <div class="block-text" id="textblob-output"></div>
+                        </div>
+
+                        <div class="comparison-card bert-block">
+                            <div class="block-header">
+                                <span class="badge badge-bert">BERT Contextual Correction</span>
+                                <span class="card-caption">Neural network-based, context-level</span>
+                            </div>
+                            <div class="block-text" id="bert-output"></div>
+                        </div>
+                    </div>
+
+                    <!-- Text Statistics -->
+                    <div class="stats-section glass-card">
+                        <h3><i class="fa-solid fa-chart-simple"></i> NLP Preprocessing Statistics (NLTK)</h3>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-name">Sentences Count</div>
+                                <div class="stat-val" id="stat-sentences">0</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-name">Total Words</div>
+                                <div class="stat-val" id="stat-words">0</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-name">Stopwords Detected</div>
+                                <div class="stat-val" id="stat-stops">0</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-name">Character Count</div>
+                                <div class="stat-val" id="stat-chars">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="app-footer">
+            <p>AI-Powered Autocorrect Tool &copy; 2026 | Built for Internship/Academic Submission</p>
+            <p class="tech-stack-badges">
+                <span><i class="fa-brands fa-python"></i> Python 3.11</span>
+                <span><i class="fa-solid fa-network-wired"></i> PyTorch</span>
+                <span><i class="fa-solid fa-code"></i> NLTK & TextBlob</span>
+                <span><i class="fa-solid fa-microchip"></i> DistilBERT</span>
+            </p>
+        </footer>
+    </div>
+
+    <!-- Asynchronous Javascript Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const textInput = document.getElementById('text-input');
+            const currentCharCount = document.getElementById('current-char-count');
+            const sampleSelect = document.getElementById('sample-select');
+            const clearBtn = document.getElementById('clear-btn');
+            const correctBtn = document.getElementById('correct-btn');
+            const loader = document.getElementById('loader');
+            const loaderMessage = document.getElementById('loader-message');
+            
+            const welcomePlaceholder = document.getElementById('welcome-placeholder');
+            const resultsContent = document.getElementById('results-content');
+            
+            const metricTime = document.getElementById('metric-time');
+            const metricCorrections = document.getElementById('metric-corrections');
+            const metricAccuracy = document.getElementById('metric-accuracy');
+            
+            const originalOutput = document.getElementById('original-output');
+            const textblobOutput = document.getElementById('textblob-output');
+            const bertOutput = document.getElementById('bert-output');
+            
+            const statSentences = document.getElementById('stat-sentences');
+            const statWords = document.getElementById('stat-words');
+            const statStops = document.getElementById('stat-stops');
+            const statChars = document.getElementById('stat-chars');
+            
+            const bertStatusDot = document.getElementById('bert-status-dot');
+            const bertStatusText = document.getElementById('bert-status-text');
+
+            // Character Counter
+            textInput.addEventListener('input', () => {
+                currentCharCount.textContent = textInput.value.length;
+            });
+
+            // Check BERT Status on startup
+            async function checkModelStatus() {
+                try {
+                    const response = await fetch('/status');
+                    const data = await response.json();
+                    if (data.bert_loaded) {
+                        bertStatusDot.className = "dot green-dot";
+                        bertStatusText.textContent = "READY";
+                    } else {
+                        bertStatusDot.className = "dot yellow-dot";
+                        bertStatusText.textContent = "STANDBY (Loads on first run)";
+                    }
+                } catch (e) {
+                    bertStatusDot.className = "dot red-dot";
+                    bertStatusText.textContent = "ERROR CONNECTING";
+                }
+            }
+            checkModelStatus();
+
+            // Load Sample Inputs
+            sampleSelect.addEventListener('change', () => {
+                if (sampleSelect.value) {
+                    textInput.value = sampleSelect.value;
+                    currentCharCount.textContent = textInput.value.length;
+                }
+            });
+
+            // Clear Input and outputs
+            clearBtn.addEventListener('click', () => {
+                textInput.value = "";
+                currentCharCount.textContent = "0";
+                sampleSelect.value = "";
+                resultsContent.classList.add('hidden');
+                welcomePlaceholder.classList.remove('hidden');
+            });
+
+            // Run AI Correction
+            correctBtn.addEventListener('click', async () => {
+                const text = textInput.value.trim();
+                if (!text) {
+                    alert("Please enter some text to correct!");
+                    return;
+                }
+
+                // Show loader
+                loader.classList.remove('hidden');
+                welcomePlaceholder.classList.add('hidden');
+                resultsContent.classList.add('hidden');
+                
+                let loadMessages = [
+                    "Tokenizing input text using NLTK...",
+                    "Cleaning text and running TextBlob spell check...",
+                    "Loading BERT model weights into memory...",
+                    "Comparing context tokens with fill-mask candidates...",
+                    "Calculating performance metrics and diffs..."
+                ];
+                
+                let msgIdx = 0;
+                loaderMessage.textContent = loadMessages[0];
+                const msgInterval = setInterval(() => {
+                    msgIdx = (msgIdx + 1) % loadMessages.length;
+                    loaderMessage.textContent = loadMessages[msgIdx];
+                }, 1200);
+
+                try {
+                    const response = await fetch('/correct', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ text: text })
+                    });
+
+                    clearInterval(msgInterval);
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        // Update Model Status UI
+                        if (data.bert_used) {
+                            bertStatusDot.className = "dot green-dot";
+                            bertStatusText.textContent = "READY";
+                        }
+
+                        // Fill Performance Metrics
+                        metricTime.textContent = `${data.metrics.processing_time_sec.toFixed(3)}s`;
+                        metricCorrections.textContent = data.metrics.bert_corrections;
+                        
+                        // Accuracy estimate represents spelling cleanliness score
+                        const qualityScore = data.metrics.spelling_quality_score;
+                        metricAccuracy.textContent = `${qualityScore}%`;
+
+                        // Fill Outputs with highlighted HTML
+                        originalOutput.innerHTML = data.highlighted.original;
+                        textblobOutput.innerHTML = data.highlighted.textblob;
+                        bertOutput.innerHTML = data.highlighted.bert;
+
+                        // Fill NLP Statistics
+                        statSentences.textContent = data.statistics.sentence_count;
+                        statWords.textContent = data.statistics.word_count;
+                        statStops.textContent = data.statistics.stopword_count;
+                        statChars.textContent = data.statistics.char_count;
+
+                        // Show results
+                        loader.classList.add('hidden');
+                        resultsContent.classList.remove('hidden');
+                    } else {
+                        alert(`Error from server: ${data.error || 'Unknown error'}`);
+                        loader.classList.add('hidden');
+                        welcomePlaceholder.classList.remove('hidden');
+                    }
+                } catch (error) {
+                    clearInterval(msgInterval);
+                    console.error("Error running correction:", error);
+                    alert("A communication error occurred with the server. Please ensure the backend is running.");
+                    loader.classList.add('hidden');
+                    welcomePlaceholder.classList.remove('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+=====================================================================
+            AI-POWERED AUTOCORRECT TOOL - TEST SENTENCES
+=====================================================================
+This file contains 20 sample sentences with various spelling and 
+contextual homophone errors. Use these to test the capabilities 
+of the basic TextBlob spell checker versus the contextual BERT model.
+=====================================================================
+
+1. Homophone: "close" instead of "clothes"
+   I went to the shore to buy some close for the winter.
+
+2. Homophone: "there" instead of "their"
+   They are going to there school now.
+
+3. Homophone: "too" instead of "to"
+   She walked too the store to get some groceries.
+
+4. Homophone: "bye" instead of "buy"
+   I am going to bye a new laptop tomorrow.
+
+5. Homophone: "its" instead of "it's"
+   The dog wagged its tail because it's happy.
+
+6. Homophone: "loose" instead of "lose"
+   It is easy to lose your keys if they are loose in your pocket.
+
+7. Homophone: "affect" instead of "effect"
+   The medicine did not have a strong affect on my cold.
+
+8. Confused Words: "accept" instead of "except"
+   We accept your invitation except for the last day.
+
+9. Confused Words: "than" instead of "then"
+   I would rather study python than java, then I will build an AI.
+
+10. Homophone: "two" instead of "to"
+    He went two the market to buy apples.
+
+11. Spelling: Multiple simple spelling mistakes
+    I think this is a verry bad spellling error.
+
+12. Spelling: Academic terms
+    NLP preprocessing is a crucial step in machine learnning.
+
+13. Spelling: Typographical slips
+    The proproject was simpley outtstanding and beautiful.
+
+14. Spelling & Grammar: Past tense and spelling
+    She walk to the library yesterday and readed a book.
+
+15. Spelling: Business context
+    Please send the final reportt to the manager by tomorow.
+
+16. Context: "principle" vs "principal"
+    The principal of the school is a man of high principles.
+
+17. Spelling: Technology vocabulary
+    We are using deep learning transformmers for contextual correction.
+
+18. Spelling: Everyday conversation
+    Could you please reccomend a good resturant in this city?
+
+19. Homophone: "here" vs "hear"
+    I cannot hear what you are saying over here.
+
+20. Homophone: "write" vs "right"
+    Please write the correct answers on the right side of the paper.
