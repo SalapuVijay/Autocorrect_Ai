@@ -16,8 +16,4 @@ pip install -r requirements.txt
 echo "3. Pre-downloading NLTK datasets..."
 python -c "import nltk; nltk.download('punkt', quiet=True); nltk.download('punkt_tab', quiet=True); nltk.download('stopwords', quiet=True)"
 
-# Pre-download tiny BERT model weights so the slug contains the pre-cached weights
-echo "4. Pre-caching BERT transformer weights..."
-python -c "from transformers import pipeline; pipeline('fill-mask', model='prajjwal1/bert-tiny')"
-
 echo "=== BUILD SCRIPT COMPLETED SUCCESSFULLY ==="
