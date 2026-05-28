@@ -8,16 +8,20 @@ echo "=== STARTING DEPLOYMENT BUILD SCRIPT ==="
 echo "1. Upgrading Pip..."
 pip install --upgrade pip
 
-# Install project requirements
-echo "2. Installing requirements.txt..."
+# Install CPU-only PyTorch first (only ~150MB instead of 2.5GB CUDA version)
+echo "2. Installing CPU-only PyTorch..."
+pip install torch --index-url https://download.pytorch.org/whl/cpu
+
+# Install remaining project requirements
+echo "3. Installing requirements.txt..."
 pip install -r requirements.txt
 
 # Pre-download NLTK data to ensure zero runtime latency
-echo "3. Pre-downloading NLTK datasets..."
+echo "4. Pre-downloading NLTK datasets..."
 python -c "import nltk; nltk.download('punkt', quiet=True); nltk.download('punkt_tab', quiet=True); nltk.download('stopwords', quiet=True)"
 
 # Pre-download tiny BERT model weights so the slug contains the pre-cached weights
-echo "4. Pre-caching BERT transformer weights..."
+echo "5. Pre-caching BERT transformer weights..."
 python -c "from transformers import pipeline; pipeline('fill-mask', model='prajjwal1/bert-tiny')"
 
 echo "=== BUILD SCRIPT COMPLETED SUCCESSFULLY ==="
