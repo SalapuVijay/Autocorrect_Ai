@@ -1,5 +1,8 @@
 # AI-Powered Autocorrect Tool
 
+> [!TIP]
+> **🚀 Live Public Demonstration**: **[https://autocorrect-ai-5ez8.onrender.com](https://autocorrect-ai-5ez8.onrender.com)**
+
 An advanced, context-aware Spelling and Grammar Correction System that merges traditional heuristic-based Natural Language Processing with deep learning transformers. This project showcases the difference between word-level dictionary lookups (TextBlob) and neural-network-based contextual understanding (DistilBERT).
 
 Developed as a highly professional, submission-ready project for internships, training programs, and academic presentations.
