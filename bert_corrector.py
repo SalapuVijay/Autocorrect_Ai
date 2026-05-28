@@ -43,7 +43,7 @@ def get_edit_distance(s1: str, s2: str) -> int:
 # =====================================================================
 class BERTContextualCorrector:
     def __init__(self):
-        self.model_name = "distilbert-base-uncased"
+        self.model_name = "prajjwal1/bert-tiny"
         self.enabled = False
         self.mask_filler = None
         
